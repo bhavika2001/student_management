@@ -16,7 +16,7 @@
 	<properties>
 		<java.version>17</java.version>
 		
-		<sonar.host.url>http://sonarqube.example.com:9000</sonar.host.url>
+    <sonar.host.url>https://sonarqube-user1.apps.cluster-xdtv4.xdtv4.sandbox2861.opentlc.com</sonar.host.url>
     <sonar.login>sqa_28157637253635871adcefb076954750e67d3690</sonar.login>
     <sonar.projectKey>student-management-system</sonar.projectKey>
     <sonar.projectName>Student Management System</sonar.projectName>
