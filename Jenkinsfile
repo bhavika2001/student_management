@@ -4,15 +4,14 @@ pipeline {
     environment {
         GIT_REPO = 'https://github.com/bhavika2001/student_management.git'
         GIT_BRANCH = 'main'
-        MAVEN_HOME = 'C:\\Users\\bhavika.ajay.kotewar\\Downloads\\apache-maven-3.9.5-bin\\apache-maven-3.9.5'
     }
 
     stages {
         stage('Clone Repository') {
             steps {
                 script {
-                    // Clone the repository from GitHub using the token
-                    git branch: "${GIT_BRANCH}", url: "${GIT_REPO}"
+                    // Clone the repository using Git credentials
+                    git credentialsId: 'github-credentials', branch: "${GIT_BRANCH}", url: "${GIT_REPO}"
                 }
             }
         }
@@ -20,8 +19,8 @@ pipeline {
         stage('Build Application') {
             steps {
                 script {
-                    // Use Maven to build the project
-                    bat "\"${MAVEN_HOME}\\bin\\mvn\" clean package -DskipTests"
+                    // Run Maven build to package the application
+                    bat './mvnw clean package -DskipTests'
                 }
             }
         }
@@ -29,7 +28,7 @@ pipeline {
         stage('Run Application Locally') {
             steps {
                 script {
-                    // Run the application locally (if required)
+                    // Run the generated JAR file (replace 'sh' with 'bat')
                     bat 'start java -jar target/*.jar > app.log 2>&1'
                 }
             }
@@ -38,7 +37,7 @@ pipeline {
 
     post {
         success {
-            echo 'Application built and running locally on http://localhost:8080!'
+            echo 'Application deployed locally and running on http://localhost:8080!'
         }
         failure {
             echo 'Deployment failed!'
