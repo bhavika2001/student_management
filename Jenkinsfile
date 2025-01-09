@@ -4,15 +4,25 @@ pipeline {
     environment {
         GIT_REPO = 'https://github.com/bhavika2001/student_management.git'
         GIT_BRANCH = 'main'
-        GITHUB_TOKEN = credentials('github-token') // Reference the secure GitHub token
+        GITHUB_TOKEN = credentials('github-token') // Securely reference GitHub token
     }
 
     stages {
+        stage('Clean Workspace') {
+            steps {
+                script {
+                    // Remove existing directory if it exists
+                    bat 'IF EXIST student_management (rmdir /S /Q student_management)'
+                }
+            }
+        }
+
         stage('Clone Repository') {
             steps {
                 script {
+                    // Clone the repository securely
                     sh """
-                    git clone -b ${GIT_BRANCH} https://${GITHUB_TOKEN}@github.com/bhavika2001/student_management.git
+                    git clone -b ${GIT_BRANCH} https://$GITHUB_TOKEN@github.com/bhavika2001/student_management.git
                     """
                 }
             }
@@ -21,7 +31,7 @@ pipeline {
         stage('Build Application') {
             steps {
                 script {
-                    // Use Windows-compatible command
+                    // Build the application using Maven
                     bat 'mvnw.cmd clean package -DskipTests'
                 }
             }
@@ -30,7 +40,7 @@ pipeline {
         stage('Run Application Locally') {
             steps {
                 script {
-                    // Start the application using the built JAR
+                    // Start the application
                     bat 'start java -jar target/student-management-system-0.0.1-SNAPSHOT.jar > app.log 2>&1'
                 }
             }
