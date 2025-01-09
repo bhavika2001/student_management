@@ -32,7 +32,7 @@ pipeline {
             steps {
                 script {
                     // Build the application using Maven
-                    bat 'mvn clean package -DskipTests'
+                     bat 'mvnw.cmd clean package -DskipTests'
                 }
             }
         }
