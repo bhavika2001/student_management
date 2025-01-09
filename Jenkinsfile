@@ -4,14 +4,13 @@ pipeline {
     environment {
         GIT_REPO = 'https://github.com/bhavika2001/student_management.git'
         GIT_BRANCH = 'main'
-        GITHUB_TOKEN = credentials('github-token') // Reference the secure GitHub token from Jenkins credentials
+        GITHUB_TOKEN = credentials('github-token') // Reference the secure GitHub token
     }
 
     stages {
         stage('Clone Repository') {
             steps {
                 script {
-                    // Clone the repository using the GitHub token for authentication
                     sh """
                     git clone -b ${GIT_BRANCH} https://${GITHUB_TOKEN}@github.com/bhavika2001/student_management.git
                     """
@@ -22,8 +21,8 @@ pipeline {
         stage('Build Application') {
             steps {
                 script {
-                    // Run Maven build to package the application
-                    bat './mvnw clean package -DskipTests'
+                    // Use Windows-compatible command
+                    bat 'mvnw.cmd clean package -DskipTests'
                 }
             }
         }
@@ -31,8 +30,8 @@ pipeline {
         stage('Run Application Locally') {
             steps {
                 script {
-                    // Run the generated JAR file (replace 'sh' with 'bat' for Windows)
-                    bat 'start java -jar target/*.jar > app.log 2>&1'
+                    // Start the application using the built JAR
+                    bat 'start java -jar target/student-management-system-0.0.1-SNAPSHOT.jar > app.log 2>&1'
                 }
             }
         }
