@@ -4,14 +4,17 @@ pipeline {
     environment {
         GIT_REPO = 'https://github.com/bhavika2001/student_management.git'
         GIT_BRANCH = 'main'
+        GITHUB_TOKEN = credentials('github-token') // Reference the secure GitHub token from Jenkins credentials
     }
 
     stages {
         stage('Clone Repository') {
             steps {
                 script {
-                    // Clone the repository using Git credentials
-                    git credentialsId: 'github-credentials', branch: "${GIT_BRANCH}", url: "${GIT_REPO}"
+                    // Clone the repository using the GitHub token for authentication
+                    sh """
+                    git clone -b ${GIT_BRANCH} https://${GITHUB_TOKEN}@github.com/bhavika2001/student_management.git
+                    """
                 }
             }
         }
@@ -28,7 +31,7 @@ pipeline {
         stage('Run Application Locally') {
             steps {
                 script {
-                    // Run the generated JAR file (replace 'sh' with 'bat')
+                    // Run the generated JAR file (replace 'sh' with 'bat' for Windows)
                     bat 'start java -jar target/*.jar > app.log 2>&1'
                 }
             }
