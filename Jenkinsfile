@@ -4,26 +4,15 @@ pipeline {
     environment {
         GIT_REPO = 'https://github.com/bhavika2001/student_management.git'
         GIT_BRANCH = 'main'
-        GITHUB_TOKEN = credentials('github-token') // Securely reference GitHub token
+        MAVEN_HOME = 'C:\\Users\\bhavika.ajay.kotewar\\Downloads\\apache-maven-3.9.5-bin\\apache-maven-3.9.5'
     }
 
     stages {
-        stage('Clean Workspace') {
-            steps {
-                script {
-                    // Remove existing directory if it exists
-                    bat 'IF EXIST student_management (rmdir /S /Q student_management)'
-                }
-            }
-        }
-
         stage('Clone Repository') {
             steps {
                 script {
-                    // Clone the repository securely
-                    sh """
-                    git clone -b ${GIT_BRANCH} https://$GITHUB_TOKEN@github.com/bhavika2001/student_management.git
-                    """
+                    // Clone the repository from GitHub using the token
+                    git branch: "${GIT_BRANCH}", url: "${GIT_REPO}"
                 }
             }
         }
@@ -31,8 +20,8 @@ pipeline {
         stage('Build Application') {
             steps {
                 script {
-                    // Build the application using Maven
-                     bat 'mvnw.cmd clean package -DskipTests'
+                    // Use Maven to build the project
+                    bat "\"${MAVEN_HOME}\\bin\\mvn\" clean package -DskipTests"
                 }
             }
         }
@@ -40,8 +29,8 @@ pipeline {
         stage('Run Application Locally') {
             steps {
                 script {
-                    // Start the application
-                    bat 'start java -jar target/student-management-system-0.0.1-SNAPSHOT.jar > app.log 2>&1'
+                    // Run the application locally (if required)
+                    bat 'start java -jar target/*.jar > app.log 2>&1'
                 }
             }
         }
@@ -49,7 +38,7 @@ pipeline {
 
     post {
         success {
-            echo 'Application deployed locally and running on http://localhost:8080!'
+            echo 'Application built and running locally on http://localhost:8080!'
         }
         failure {
             echo 'Deployment failed!'
